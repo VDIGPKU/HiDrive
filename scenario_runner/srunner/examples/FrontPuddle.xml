@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<scenarios>
+    <scenario name="FrontPuddle_1" type="FrontPuddle" town="Town10HD_Opt">
+        <ego_vehicle x="388.9" y="-140.0" z="0.0" yaw="90" model="vehicle.tesla.model3" />
+
+        <distance value="22.0" />
+        <lateral_offset value="-0.6" />
+        <yaw_offset value="0.0" />
+
+        <puddle_model value="blueprint.puddledecala" />
+        <puddle_count value="2" />
+        <puddle_spacing value="4.0" />
+
+        <post_distance value="30.0" />
+
+        <enable_friction value="true" />
+        <puddle_friction value="0.55" />
+        <friction_extent_x value="2.8" />
+        <friction_extent_y value="1.8" />
+        <friction_extent_z value="1.0" />
+
+        <debug value="true" />
+    </scenario>
+</scenarios>

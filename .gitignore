@@ -1,0 +1,30 @@
+__pycache__/
+*.py[cod]
+
+# Runtime / evaluation artifacts
+results/
+eval_results/
+outputs/
+logs/
+wandb/
+*.log
+*.out
+*.err
+*.core
+core.*
+
+# CARLA / leaderboard generated artifacts
+carla_recordings/
+*.rec
+*.live_results.txt
+live_results.txt
+simulation_results.json
+
+# Local temporary backups and reports
+*.bak
+*.bak_*
+*~
+*.tmp
+*.temp
+*_report.txt
+.*_report.txt

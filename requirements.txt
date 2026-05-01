@@ -1,0 +1,36 @@
+# HiLevAD benchmark/evaluator dependencies.
+#
+# This file intentionally excludes method-specific agent/model dependencies,
+# checkpoints, and model runtimes. Install those in the evaluated agent's own
+# environment or requirements file.
+#
+# CARLA itself is not installed from PyPI here. Use a packaged CARLA build and
+# set CARLA_ROOT as described in docs/HiLevAD/INSTALL.md.
+
+setuptools<81
+
+dictor>=0.1.12
+requests>=2.28
+numpy>=1.23,<2.0
+opencv-python>=4.8,<5
+pygame>=2.1
+tabulate>=0.9
+pexpect>=4.8
+transforms3d>=0.4
+
+py-trees==0.8.3
+networkx>=2.8,<3
+Shapely>=1.8,<3
+psutil>=5.9
+xmlschema>=1.0,<3
+ephem>=4.1
+matplotlib>=3.6,<4
+six>=1.16
+simple-watchdog-timer>=0.1
+
+# Utility scripts under tools/.
+scipy>=1.10,<2
+tqdm>=4.64
+easydict>=1.10
+h5py>=3.8
+laspy>=2.4
