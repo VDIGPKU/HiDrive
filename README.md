@@ -116,9 +116,9 @@ These results suggest that long-tail robustness and legal-ethical reasoning rema
 
 ## Benchmark Docs
 
-- Installation and setup: `docs/HiLevAD/INSTALL.md`
-- Metric definitions: `docs/HiLevAD/METRICS.md`
-- Route split protocol: `docs/HiLevAD/SPLITS.md`
+- Installation and setup: [INSTALL.md](docs/HiLevAD/INSTALL.md)
+- Metric definitions: [METRICS.md](docs/HiLevAD/METRICS.md)
+- Route split protocol: [SPLITS.md](docs/HiLevAD/SPLITS.md)
 
 ---
 
