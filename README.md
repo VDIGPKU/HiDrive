@@ -123,8 +123,8 @@ These results suggest that long-tail robustness and legal-ethical reasoning rema
 ```bibtex
 @article{xia2026hidrive,
   title={HiDrive: A Closed-Loop Benchmark for High-Level Autonomous Driving},
-  author={Xia, Zhongyu and Zhu, Guanyu and Tang, Guo and Chen, Wenhao and Wang, Yongtao and Yang, Ming-Hsuan},
-  journal={arXiv preprint arXiv:xxxx.xxxxx},
+  author={Xia, Zhongyu and Zhu, Guanyu and Tang, Guo and Chen, Wenhao and Wang, Yongtao},
+  journal={arXiv preprint arXiv:2605.09972},
   year={2026}
 }
 ```
