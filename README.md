@@ -1,15 +1,19 @@
 # HiDrive
 
 <p align="center">
-  <strong>A Closed-Loop Benchmark for High-Level Autonomous Driving</strong>
+  <strong>HiDrive: A Closed-Loop Benchmark for High-Level Autonomous Driving</strong>
 </p>
+
+
+
+<p align="center">
+  <a href="https://arxiv.org/abs/2605.09972">arXiv</a> &nbsp;|&nbsp;
+  <a href="https://huggingface.co/HiDriveBenchmark/HiDriveBenchmark">Download Compiled Assets at Hugging Face</a>
+</p>
+
 
 <p align="center">
   HiDrive focuses on <strong>long-tail scenarios</strong> and <strong>high-level driving capabilities</strong> such as legal compliance, ethical reasoning, and emergency response.
-</p>
-
-<p align="center">
-  <a href="https://huggingface.co/HiDriveBenchmark/HiDriveBenchmark">Hugging Face Assets</a>
 </p>
 
 ---
@@ -130,3 +134,7 @@ These results suggest that long-tail robustness and legal-ethical reasoning rema
 ```
 
 If you use HiDrive in your research, please cite the paper.
+
+## License
+
+The project is only free for academic research purposes but needs authorization for commerce. For commerce permission, please contact wyt@pku.edu.cn.
