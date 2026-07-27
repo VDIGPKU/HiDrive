@@ -13,15 +13,29 @@ similarly to:
 Carla-0.10.0-Linux-Shipping__rider_puddle_20260408_135427.tar.gz
 ```
 
-The HiLevAD evaluator expects a CARLA launcher named `CarlaUE4.sh`. Some UE5
-CARLA packages keep this launcher name for compatibility.
+HiLevAD uses a UE5 CARLA package. Depending on the package version, the launcher
+may be named either `CarlaUnreal.sh` (native UE5 name) or `CarlaUE4.sh`
+(compatibility name). The evaluator supports both names.
 
 Supported package layouts:
 
 ```text
 $CARLA_ROOT/CarlaUE4.sh
+$CARLA_ROOT/CarlaUnreal.sh
 $CARLA_ROOT/Linux/CarlaUE4.sh
+$CARLA_ROOT/Linux/CarlaUnreal.sh
 ```
+
+After extraction, run the compatibility preparation script once:
+
+```bash
+bash scripts/prepare_carla_package.sh /path/to/carla_hilevad
+```
+
+This creates compatibility symlinks when needed, including `CarlaUE4.sh ->
+CarlaUnreal.sh` and `libfoonathan_memory-0.7.4.so ->
+libfoonathan_memory-0.7.3.so` for release packages that ship the 0.7.3 library
+under a binary requiring the 0.7.4 soname.
 
 ## Create the Python Environment
 
@@ -37,14 +51,25 @@ If you prefer manual setup:
 
 ```bash
 cd /path/to/HiLevAD
-conda create -n hilevad python=3.10 -y
+conda create -n hilevad python=3.13 -y
 conda activate hilevad
-pip install -r requirements.txt
+pip install -r requirements-py313.txt
 ```
 
 Do not install agent/model dependencies into this file unless they are required
 by the benchmark itself. Keep each evaluated agent responsible for its own model
 environment.
+
+After extracting the HiDrive CARLA package, install the matching CARLA PythonAPI
+wheel into the same environment:
+
+```bash
+export CARLA_ROOT=/path/to/carla_hilevad
+pip install "$CARLA_ROOT"/PythonAPI/carla/dist/carla-*.whl
+```
+
+The released wheel is built for CPython 3.13. If you use a different Python
+version, you must provide a CARLA wheel compiled for that exact ABI.
 
 ## Obtain the Packaged CARLA Build
 
@@ -83,7 +108,9 @@ The extracted directory should contain one of:
 
 ```text
 /path/to/carla_hilevad/CarlaUE4.sh
+/path/to/carla_hilevad/CarlaUnreal.sh
 /path/to/carla_hilevad/Linux/CarlaUE4.sh
+/path/to/carla_hilevad/Linux/CarlaUnreal.sh
 ```
 
 ## Configure CARLA
@@ -101,11 +128,12 @@ exist:
 $CARLA_ROOT/PythonAPI
 $CARLA_ROOT/PythonAPI/carla
 $CARLA_ROOT/PythonAPI/carla/dist/carla-*.egg
+$CARLA_ROOT/PythonAPI/carla/dist/carla-*.whl
 ```
 
-If your CARLA package installs the Python API as a `.so` in the conda
-environment instead of an egg, make sure `python -c "import carla"` works in the
-selected environment.
+The released HiDrive CARLA package currently ships a CPython 3.13 wheel, for
+example `carla-0.10.0-cp313-cp313-linux_x86_64.whl`. Use Python 3.13 unless you
+also provide a CARLA PythonAPI wheel compiled for another Python ABI.
 
 ## Basic Import Check
 
@@ -185,6 +213,8 @@ USE_EXISTING_SERVER=1               # connect to an already running server
 If you start CARLA manually:
 
 ```bash
+$CARLA_ROOT/Linux/CarlaUnreal.sh -vulkan -RenderOffScreen -nosound -carla-rpc-port=2000
+# or, after prepare_carla_package.sh created the compatibility link:
 $CARLA_ROOT/Linux/CarlaUE4.sh -vulkan -RenderOffScreen -nosound -carla-rpc-port=2000
 ```
 
@@ -220,7 +250,9 @@ python -c "import carla; print(carla.__file__)"
 ```
 
 If CARLA was compiled for a different Python ABI, rebuild or install the matching
-CARLA PythonAPI for the environment.
+CARLA PythonAPI for the environment. For the released CPython 3.13 package,
+`python --version` should report Python 3.13 and `python -c "import carla"`
+should resolve the cp313 wheel.
 
 ## CARLA Package Reproducibility
 

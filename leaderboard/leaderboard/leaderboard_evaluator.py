@@ -38,6 +38,23 @@ import time
 import random
 from datetime import datetime
 
+
+
+def resolve_carla_launcher(carla_root):
+    """Return the packaged CARLA launcher path for UE4-compatible and UE5 package layouts."""
+    candidates = [
+        os.path.join(carla_root, 'CarlaUE4.sh'),
+        os.path.join(carla_root, 'CarlaUnreal.sh'),
+        os.path.join(carla_root, 'Linux', 'CarlaUE4.sh'),
+        os.path.join(carla_root, 'Linux', 'CarlaUnreal.sh'),
+    ]
+    for candidate in candidates:
+        if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+            return candidate
+    raise FileNotFoundError(
+        'Cannot find CARLA launcher under {}. Expected CarlaUE4.sh or CarlaUnreal.sh'.format(carla_root)
+    )
+
 sensors_to_icons = {
     'sensor.camera.rgb':        'carla_camera',
     'sensor.lidar.ray_cast':    'carla_lidar',
@@ -212,7 +229,8 @@ class LeaderboardEvaluator(object):
         else:
             self.carla_path = os.environ["CARLA_ROOT"]
             args.port = find_free_port(args.port)
-            cmd1 = f"{os.path.join(self.carla_path, 'CarlaUE4.sh')} -vulkan -RenderOffScreen -nosound -carla-rpc-port={args.port}"
+            carla_launcher = resolve_carla_launcher(self.carla_path)
+            cmd1 = f"{carla_launcher} -vulkan -RenderOffScreen -nosound -carla-rpc-port={args.port}"
 
             # Force NVIDIA GPU usage
             env = os.environ.copy()

@@ -18,25 +18,41 @@ add_pythonpath() {
 CARLA_HOME="${CARLA_HOME:-${CARLA_PACKAGE_ROOT:-${CARLA_ROOT:-}}}"
 [ -n "$CARLA_HOME" ] || die "set CARLA_ROOT to your CARLA package path"
 
-if [ -x "${CARLA_HOME}/CarlaUE4.sh" ]; then
+prepare_carla_package() {
+  local root="$1"
+  local linux_root="${root}/Linux"
+  local lib_root="${linux_root}/CarlaUnreal/Plugins/Carla/Binaries/Linux"
+
+  if [ -x "${linux_root}/CarlaUnreal.sh" ] && [ ! -e "${linux_root}/CarlaUE4.sh" ]; then
+    ln -s CarlaUnreal.sh "${linux_root}/CarlaUE4.sh" 2>/dev/null || true
+  fi
+  if [ -f "${lib_root}/libfoonathan_memory-0.7.3.so" ] && [ ! -e "${lib_root}/libfoonathan_memory-0.7.4.so" ]; then
+    ln -s libfoonathan_memory-0.7.3.so "${lib_root}/libfoonathan_memory-0.7.4.so" 2>/dev/null || true
+  fi
+}
+
+prepare_carla_package "$CARLA_HOME"
+
+if [ -x "${CARLA_HOME}/CarlaUE4.sh" ] || [ -x "${CARLA_HOME}/CarlaUnreal.sh" ]; then
   CARLA_LAUNCH_ROOT="$CARLA_HOME"
   CARLA_API_ROOT="$CARLA_HOME"
-elif [ -x "${CARLA_HOME}/Linux/CarlaUE4.sh" ]; then
+elif [ -x "${CARLA_HOME}/Linux/CarlaUE4.sh" ] || [ -x "${CARLA_HOME}/Linux/CarlaUnreal.sh" ]; then
   CARLA_LAUNCH_ROOT="${CARLA_HOME}/Linux"
   CARLA_API_ROOT="$CARLA_HOME"
 else
-  die "cannot find CarlaUE4.sh under CARLA_ROOT=${CARLA_HOME}"
+  die "cannot find CARLA launcher under CARLA_ROOT=${CARLA_HOME}; expected CarlaUE4.sh or CarlaUnreal.sh"
 fi
 
 export CARLA_ROOT="$CARLA_LAUNCH_ROOT"
+export LD_LIBRARY_PATH="${CARLA_LAUNCH_ROOT}/CarlaUnreal/Plugins/Carla/Binaries/Linux:${CARLA_LAUNCH_ROOT}/CarlaUnreal/Binaries/Linux${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
 export SCENARIO_RUNNER_ROOT="${REPO_ROOT}/scenario_runner"
 export LEADERBOARD_ROOT="${REPO_ROOT}/leaderboard"
 export CHALLENGE_TRACK_CODENAME="${CHALLENGE_TRACK_CODENAME:-SENSORS}"
 
 add_pythonpath "${CARLA_API_ROOT}/PythonAPI"
 add_pythonpath "${CARLA_API_ROOT}/PythonAPI/carla"
-for egg in "${CARLA_API_ROOT}"/PythonAPI/carla/dist/carla-*.egg; do
-  [ -e "$egg" ] && add_pythonpath "$egg"
+for api_pkg in "${CARLA_API_ROOT}"/PythonAPI/carla/dist/carla-*.egg "${CARLA_API_ROOT}"/PythonAPI/carla/dist/carla-*.whl; do
+  [ -e "$api_pkg" ] && add_pythonpath "$api_pkg"
 done
 add_pythonpath "${REPO_ROOT}/leaderboard"
 add_pythonpath "${REPO_ROOT}/leaderboard/team_code"

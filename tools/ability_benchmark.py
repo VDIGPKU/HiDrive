@@ -9,6 +9,22 @@ import subprocess
 import time
 import random
 
+
+def resolve_carla_launcher(carla_root):
+    candidates = [
+        os.path.join(carla_root, 'CarlaUE4.sh'),
+        os.path.join(carla_root, 'CarlaUnreal.sh'),
+        os.path.join(carla_root, 'Linux', 'CarlaUE4.sh'),
+        os.path.join(carla_root, 'Linux', 'CarlaUnreal.sh'),
+    ]
+    for candidate in candidates:
+        if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+            return candidate
+    raise FileNotFoundError(
+        'Cannot find CARLA launcher under {}. Expected CarlaUE4.sh or CarlaUnreal.sh'.format(carla_root)
+    )
+
+
 Ability = {
     "Overtaking":['Accident', 'AccidentTwoWays', 'ConstructionObstacle', 'ConstructionObstacleTwoWays', 'HazardAtSideLaneTwoWays', 'HazardAtSideLane', 'ParkedObstacleTwoWays', 'ParkedObstacle', 'VehicleOpensDoorTwoWays'],
     "Merging": ['CrossingBicycleFlow', 'EnterActorFlow', 'HighwayExit', 'InterurbanActorFlow', 'HighwayCutIn', 'InterurbanAdvancedActorFlow', 'MergerIntoSlowTrafficV2', 'MergerIntoSlowTraffic', 'NonSignalizedJunctionLeftTurn', 'NonSignalizedJunctionRightTurn', 'NonSignalizedJunctionLeftTurnEnterFlow', 'ParkingExit', 'SequentialLaneChange', 'SignalizedJunctionLeftTurn', 'SignalizedJunctionRightTurn', 'SignalizedJunctionLeftTurnEnterFlow'],
@@ -86,7 +102,8 @@ def main(args):
     sorted_routes = sorted(routes, key=lambda x: x.get('town'))
     
     carla_path = os.environ["CARLA_ROOT"]
-    cmd1 = f"{os.path.join(carla_path, 'CarlaUE4.sh')} -RenderOffScreen -nosound -carla-rpc-port={args.port}"
+    carla_launcher = resolve_carla_launcher(carla_path)
+    cmd1 = f"{carla_launcher} -RenderOffScreen -nosound -carla-rpc-port={args.port}"
     server = subprocess.Popen(cmd1, shell=True, preexec_fn=os.setsid)
     print(cmd1, server.returncode, flush=True)
     time.sleep(10)
